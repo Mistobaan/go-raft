@@ -41,6 +41,10 @@ func (ss *Snapshot) save() error {
 
 	b, err := json.Marshal(ss)
 
+	if err != nil {
+		return err
+	}
+
 	// Generate checksum.
 	checksum := crc32.ChecksumIEEE(b)
 
@@ -54,12 +58,10 @@ func (ss *Snapshot) save() error {
 	}
 
 	// force the change writting to disk
-	syscall.Fsync(int(file.Fd()))
-	return err
+	return syscall.Fsync(int(file.Fd()))
 }
 
 // remove the file of the snapshot
 func (ss *Snapshot) remove() error {
-	err := os.Remove(ss.Path)
-	return err
+	return os.Remove(ss.Path)
 }
